@@ -6,7 +6,7 @@ import com.task.task2.dto.post.PostResponseDto;
 import com.task.task2.entity.Post;
 import com.task.task2.entity.User;
 import com.task.task2.repository.PostRepository;
-import jakarta.servlet.http.HttpServletRequest;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,14 +16,17 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    public PostResponseDto create(Create requestDto, HttpServletRequest req) {
+    public PostResponseDto create(Create requestDto, User user) {
         Post createdPost = new Post(requestDto);
-        User user = (User) req.getAttribute("user");
-        createdPost.setWriter(user.getUsername()); // 임시 -> 나중에 token에서 username 가져올 예정
+        createdPost.setWriter(user.getUsername());
         createdPost = postRepository.save(createdPost);
         return new PostResponseDto(createdPost);
     }
 
+    /**
+     * 여기에 변화가 생길 예정
+     * @return
+     */
     public List<PostResponseDto> getList() {
         var result = postRepository.getPostsOrderByCreatedAtDesc();
         return result.stream().map(PostResponseDto::new).toList();
@@ -34,26 +37,19 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public PostResponseDto update(Long id, Edit requestDto, HttpServletRequest req) {
-        User editor = (User) req.getAttribute("user");
+    public PostResponseDto update(Long id, Edit requestDto, User user) {
         Post post =this.findById(id);
-
-        try {
-            if (!post.getWriter().equals(editor.getUsername())) {
-                throw new IllegalAccessException("UnAuthorization");
-            }
-            post = postRepository.update(post);
-            return new PostResponseDto(post);
-        } catch (IllegalAccessException e) {
-            throw new RuntimeException(e);
-        } 
+        if (!post.getWriter().equals(user.getUsername())) {
+            throw new IllegalArgumentException("유효하지 않는 사용자");
+        }
+        post = postRepository.update(post);
+        return new PostResponseDto(post);
     }
 
-    public PostResponseDto.Delete delete(Long id, HttpServletRequest req) {
+    public PostResponseDto.Delete delete(Long id, User user) {
         Post post = findById(id);
-        User user = (User) req.getAttribute("user");
         String msg = "";
-        int status = HttpStatus.OK.value();
+        HttpStatus status = HttpStatus.OK;
 
         try {
             if (post.getWriter().equals(user.getUsername())) {
@@ -61,17 +57,18 @@ public class PostService {
             }
             postRepository.delete(post);
             msg = "게시글 삭제 성공";
-            status = HttpStatus.OK.value();
+            status = HttpStatus.OK;
         } catch (IllegalArgumentException e) {
             msg = e.getMessage();
-            status = HttpStatus.SERVICE_UNAVAILABLE.value();
+            status = HttpStatus.SERVICE_UNAVAILABLE;
+
         } catch (IllegalAccessException ae) {
             msg = ae.getMessage();
-            status = HttpStatus.UNAUTHORIZED.value();
+            status = HttpStatus.UNAUTHORIZED;
         }
         return PostResponseDto.Delete.builder()
                 .msg(msg)
-                .statusCode(status)
+                .statusCode(status.value())
                 .build();
     }
 
