@@ -1,45 +1,44 @@
 package com.task.task2.entity;
 
 import com.task.task2.dto.post.PostRequestDto;
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
+
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.data.jpa.repository.Modifying;
 
 @Entity
 @Getter
+@NoArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
-@Table(name = "post")
-public class Post {
+@Table(name = "posts")
+public class Post extends Timestamped{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 25, nullable = false)
+    @Column(length = 250, nullable = false)
     private String title;
-
-    @Column(nullable = false)
-    private String writer;
 
     @Column(nullable = false)
     private String content;
 
-    @CreatedDate
-    private LocalDateTime createdAt;
+    @Column(nullable = false)
+    private String writer;
 
-    private LocalDateTime modifiedAt;
+    @OneToMany(mappedBy = "post")
+    private List<Comment> commentList = new ArrayList<>();
 
     public void setWriter(String username) {
         this.writer = username;
     }
+
     public void setTitle(String title) {
         this.title = title;
     }
@@ -52,10 +51,5 @@ public class Post {
     public Post(PostRequestDto.Create dto) {
         this.title = dto.getTitle();
         this.content = dto.getContent();
-    }
-
-
-    public Post() {
-
     }
 }
