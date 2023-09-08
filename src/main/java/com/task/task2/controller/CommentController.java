@@ -28,9 +28,9 @@ public class CommentController {
                 .body(commentService.create(requestDto, userDetails.getUser()));
     }
 
-    @GetMapping("/comment/{commentId}")
+    @PutMapping("/comment/{commentId}")
     public ResponseEntity<CommentResponseDto> updateComment(
-            @RequestParam Long commentId,
+            @PathVariable Long commentId,
             @RequestBody @Valid CommentRequestDto.Update requestDto,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
@@ -41,7 +41,7 @@ public class CommentController {
 
     @DeleteMapping("/comment/{commentId}")
     public ResponseEntity<CommentResponseDto.Message> deleteComment(
-            @RequestParam Long commentId,
+            @PathVariable Long commentId,
             @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
         return ResponseEntity.status(HttpStatus.OK)

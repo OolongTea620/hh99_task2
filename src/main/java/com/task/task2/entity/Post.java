@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -51,5 +52,10 @@ public class Post extends Timestamped{
     public Post(PostRequestDto.Create dto) {
         this.title = dto.getTitle();
         this.content = dto.getContent();
+    }
+
+    public void update(PostRequestDto.Edit requestDto) {
+        this.title = Optional.of(requestDto.getTitle()).orElse(this.content);
+        this.content = Optional.of(requestDto.getContent()).orElse(this.content);
     }
 }
