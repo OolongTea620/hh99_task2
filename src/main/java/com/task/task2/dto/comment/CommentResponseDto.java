@@ -1,6 +1,7 @@
 package com.task.task2.dto.comment;
 
 import com.task.task2.entity.Comment;
+import com.task.task2.entity.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -23,6 +24,7 @@ public class CommentResponseDto {
     }
 
     @Builder
+    @Getter
     public static class Message {
         private String msg;
         private int statusCode;

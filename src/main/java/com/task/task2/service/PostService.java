@@ -1,5 +1,6 @@
 package com.task.task2.service;
 
+import com.task.task2.dto.post.PostRequestDto;
 import com.task.task2.dto.post.PostRequestDto.Create;
 import com.task.task2.dto.post.PostRequestDto.Edit;
 import com.task.task2.dto.post.PostResponseDto;
@@ -22,13 +23,8 @@ public class PostService {
         createdPost = postRepository.save(createdPost);
         return new PostResponseDto(createdPost);
     }
-
-    /**
-     * 여기에 변화가 생길 예정
-     * @return
-     */
     public List<PostResponseDto> getList() {
-        var result = postRepository.getPostsOrderByCreatedAtDesc();
+        var result = postRepository.findAllByOrderByCreatedAtDesc();
         return result.stream().map(PostResponseDto::new).toList();
     }
 
@@ -37,12 +33,12 @@ public class PostService {
         return new PostResponseDto(post);
     }
 
-    public PostResponseDto update(Long id, Edit requestDto, User user) {
+    public PostResponseDto update(Long id, PostRequestDto.Edit requestDto, User user) {
         Post post =this.findById(id);
         if (!post.getWriter().equals(user.getUsername())) {
             throw new IllegalArgumentException("유효하지 않는 사용자");
         }
-        post = postRepository.update(post);
+        post.update(requestDto);
         return new PostResponseDto(post);
     }
 
@@ -50,9 +46,8 @@ public class PostService {
         Post post = findById(id);
         String msg = "";
         HttpStatus status = HttpStatus.OK;
-
         try {
-            if (post.getWriter().equals(user.getUsername())) {
+            if (!post.getWriter().equals(user.getUsername())) {
                 throw new IllegalAccessException("UnAuthorized user");
             }
             postRepository.delete(post);
@@ -61,7 +56,6 @@ public class PostService {
         } catch (IllegalArgumentException e) {
             msg = e.getMessage();
             status = HttpStatus.SERVICE_UNAVAILABLE;
-
         } catch (IllegalAccessException ae) {
             msg = ae.getMessage();
             status = HttpStatus.UNAUTHORIZED;

@@ -17,10 +17,12 @@ import org.springframework.transaction.annotation.Transactional;
 public class CommentService {
     private final CommentRepository commentRepository;
     private final PostRepository postRepository;
+    @Transactional
     public CommentResponseDto create(CommentRequestDto.Create requestDto, User user) {
         Post post = postRepository.findById(requestDto.getPostId())
                 .orElseThrow(() -> new NullPointerException("게시글이 존재하지 않습니다"));
-        Comment comment = new Comment(requestDto, post);
+        Comment comment = new Comment(requestDto, post, user);
+        commentRepository.save(comment);
         return new CommentResponseDto(comment);
     }
 

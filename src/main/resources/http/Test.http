@@ -1,0 +1,64 @@
+### User Signup
+POST http://localhost:8080/api/auth/signup
+Content-Type: application/json
+
+{
+  "username": "rlafls95",
+  "password": "password"
+}
+
+### User Login
+POST http://localhost:8080/api/auth/login
+Content-Type: application/json
+
+{
+  "username": "rlafls95",
+  "password": "password"
+}
+
+### Post Insert
+POST http://localhost:8080/api/post
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "title" : "this is title",
+  "content" : "this is content"
+}
+
+### Post update
+PUT http://localhost:8080/api/post/3
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "title" : "this is title_changed",
+  "content" : "this is content_changed"
+}
+
+### Comment insert
+POST http://localhost:8080/api/comment
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "postId" : 3,
+  "content" : "this is comment1"
+}
+
+### Comment update
+PUT http://localhost:8080/api/comment/3
+Authorization: {{token}}
+Content-Type: application/json
+
+{
+  "content" : "this is changed"
+}
+
+###  Comment Delete
+DELETE http://localhost:8080/api/comment/3
+Authorization: {{token}}
+
+### Post Delete
+DELETE http://localhost:8080/api/post/3
+Authorization: {{token}}
