@@ -4,6 +4,7 @@ import com.task.task2.dto.post.PostRequestDto;
 import com.task.task2.dto.post.PostResponseDto;
 import com.task.task2.security.UserDetailsImpl;
 import com.task.task2.service.PostService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Post(게시글)", description = "게시글 CRUD API")
 @RestController
 @RequiredArgsConstructor
 public class PostController {

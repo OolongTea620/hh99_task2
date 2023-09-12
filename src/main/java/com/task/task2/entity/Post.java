@@ -33,7 +33,7 @@ public class Post extends Timestamped{
     @Column(nullable = false)
     private String writer;
 
-    @OneToMany(mappedBy = "post")
+    @OneToMany(mappedBy = "post", orphanRemoval = true, cascade = CascadeType.ALL)
     private List<Comment> commentList = new ArrayList<>();
 
     public void setWriter(String username) {

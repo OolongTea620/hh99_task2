@@ -62,3 +62,7 @@ Authorization: {{token}}
 ### Post Delete
 DELETE http://localhost:8080/api/post/3
 Authorization: {{token}}
+
+
+### Swagger Access
+GET http://localhost:8080/swagger-ui/index.html

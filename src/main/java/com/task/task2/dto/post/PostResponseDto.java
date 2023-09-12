@@ -27,7 +27,6 @@ public class PostResponseDto {
                 .map(CommentResponseDto::new)
                 .toList();
     }
-
     @Builder
     @Getter
     public static class Delete {

@@ -27,7 +27,6 @@ public class Comment extends Timestamped{
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
-
     public Comment(CommentRequestDto.Create requestDto, Post post, User user) {
         this.post = post;
         this.user = user;
