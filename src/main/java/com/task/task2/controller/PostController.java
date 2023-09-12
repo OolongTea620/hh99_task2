@@ -2,13 +2,15 @@ package com.task.task2.controller;
 
 import com.task.task2.dto.post.PostRequestDto;
 import com.task.task2.dto.post.PostResponseDto;
+import com.task.task2.security.UserDetailsImpl;
 import com.task.task2.service.PostService;
-import jakarta.servlet.http.HttpServletRequest;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+@Tag(name = "Post(게시글)", description = "게시글 CRUD API")
 @RestController
 @RequiredArgsConstructor
 public class PostController {
@@ -25,9 +28,9 @@ public class PostController {
     @PostMapping("/api/post")
     public ResponseEntity<PostResponseDto> create(
         @RequestBody @Valid PostRequestDto.Create postRequestDto,
-        HttpServletRequest req
+        @AuthenticationPrincipal UserDetailsImpl userDetails
         ) {
-        PostResponseDto result = postService.create(postRequestDto, req);
+        PostResponseDto result = postService.create(postRequestDto, userDetails.getUser());
         return ResponseEntity.status(HttpStatus.CREATED).body(result);
     }
 
@@ -47,9 +50,9 @@ public class PostController {
     public ResponseEntity<PostResponseDto> edit(
         @PathVariable Long id,
         @RequestBody PostRequestDto.Edit requestDto,
-        HttpServletRequest req
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        PostResponseDto result = postService.update(id,requestDto,req);
+        PostResponseDto result = postService.update(id,requestDto,userDetails.getUser());
 
         return ResponseEntity.ok(result);
     }
@@ -57,9 +60,9 @@ public class PostController {
     @DeleteMapping("/api/post/{id}")
     public ResponseEntity<PostResponseDto.Delete> deleteOne(
         @PathVariable Long id,
-        HttpServletRequest req
+        @AuthenticationPrincipal UserDetailsImpl userDetails
     ) {
-        PostResponseDto.Delete result = postService.delete(id, req);
+        PostResponseDto.Delete result = postService.delete(id, userDetails.getUser());
         return ResponseEntity.ok(result);
     }
 }
