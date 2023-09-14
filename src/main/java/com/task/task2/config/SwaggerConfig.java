@@ -11,7 +11,7 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI customOpenApi() {
         Info info = new Info()
-                .title("Lv3 주특기 과제")
+                .title("Lv5 주특기 과제")
                 .version("v0.0.1")
                 .description("Lv3 주특기 과제 API 명세서 입니다.");
 

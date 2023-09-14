@@ -2,8 +2,10 @@ package com.task.task2.controller;
 
 import com.task.task2.dto.comment.CommentRequestDto;
 import com.task.task2.dto.comment.CommentResponseDto;
+import com.task.task2.entity.UserLikedComment;
 import com.task.task2.security.UserDetailsImpl;
 import com.task.task2.service.CommentService;
+import com.task.task2.service.LikedService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 @AllArgsConstructor
 public class CommentController {
     private final CommentService commentService;
+    private final LikedService likedService;
     @PostMapping("/comment")
     public ResponseEntity<CommentResponseDto> createComment(
             @RequestBody @Valid CommentRequestDto.Create requestDto,
@@ -47,5 +50,14 @@ public class CommentController {
     ) {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(commentService.delete(commentId, userDetails.getUser()));
+    }
+
+    @PostMapping("/comment/{commentId}/like")
+    public ResponseEntity<CommentResponseDto.Message> likeComment(
+            @PathVariable Long commentId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(likedService.checkComment(commentId, userDetails.getUser()));
     }
 }

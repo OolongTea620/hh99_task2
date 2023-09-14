@@ -3,6 +3,7 @@ package com.task.task2.controller;
 import com.task.task2.dto.post.PostRequestDto;
 import com.task.task2.dto.post.PostResponseDto;
 import com.task.task2.security.UserDetailsImpl;
+import com.task.task2.service.LikedService;
 import com.task.task2.service.PostService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
+    private final LikedService likedService;
 
     @PostMapping("/api/post")
     public ResponseEntity<PostResponseDto> create(
@@ -64,5 +66,13 @@ public class PostController {
     ) {
         PostResponseDto.Delete result = postService.delete(id, userDetails.getUser());
         return ResponseEntity.ok(result);
+    }
+
+    @PostMapping("/api/post/{id}/like")
+    public ResponseEntity<?> userCheckLikePost(
+            @PathVariable Long id,
+            @AuthenticationPrincipal UserDetailsImpl userDetails
+    ) {
+        return ResponseEntity.ok(likedService.checkPost(id, userDetails.getUser()));
     }
 }

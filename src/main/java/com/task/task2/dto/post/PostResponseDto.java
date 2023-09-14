@@ -33,4 +33,10 @@ public class PostResponseDto {
         private String msg;
         private Integer statusCode;
     }
+
+    @Builder
+    @Getter
+    public static class Like {
+        private String msg;
+    }
 }
